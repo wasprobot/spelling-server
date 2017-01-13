@@ -22,7 +22,6 @@ def webhook():
     res = processRequest(req)
 
     res = json.dumps(res, indent=4)
-    # print(res)
     r = make_response(res)
     r.headers['Content-Type'] = 'application/json'
     return r
@@ -33,13 +32,23 @@ def processRequest(req):
     alphabet = params.get("alphabet")
     spelling = ''.join(alphabet)
 
+    next_word = requests.post('http://watchout4snakes.com/wo4snakes/Random/RandomWord').content
+
     return {
-        "speech": "You said " + spelling,
-        "displayText": "You said " + spelling,
-        "data": "You said " + spelling,
+        "speech": next_word,
+        "displayText": next_word,
+        "data": next_word,
         # "contextOut": [{"name":"spelling-server", "lifespan":2, "parameters":{"current_word": "You said " + spelling}}],
         "source": "spelling-server"
     }
+
+    # return {
+    #     "speech": "You said " + spelling,
+    #     "displayText": "You said " + spelling,
+    #     "data": "You said " + spelling,
+    #     # "contextOut": [{"name":"spelling-server", "lifespan":2, "parameters":{"current_word": "You said " + spelling}}],
+    #     "source": "spelling-server"
+    # }
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
