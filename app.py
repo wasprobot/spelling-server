@@ -39,7 +39,7 @@ def processRequest(req):
         "speech": next_word,
         "displayText": next_word,
         "data": next_word,
-        # "contextOut": [{"name":"spelling-server", "lifespan":2, "parameters":{"current_word": "You said " + spelling}}],
+        "contextOut": [{"name":"spelling-server", "lifespan":2, "parameters":{"current_word": spelling}}],
         "source": "spelling-server"
     }
 
