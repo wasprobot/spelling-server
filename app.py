@@ -29,17 +29,28 @@ def webhook():
 
 def processRequest(req):
     result = req.get("result")
-    params = result.get("parameters")
-    alphabet = params.get("alphabet")
-    spelling = ''.join(alphabet)
 
-    next_word = requests.post('http://watchout4snakes.com/wo4snakes/Random/RandomWord').content
+    contexts = result.get("contexts")
+    context = contexts[0] if len(contexts) > 0 else None
+    context_params = context.get("parameters") if context else None
+    current_word = context_params.get("current_word") if context_params else None
+
+    params = result.get("parameters")
+    alphabet = params.get("alphabet") if params else None
+    spelling = ''.join(alphabet) if alphabet else None
+
+    next_word = None
+    if current_word:
+        if current_word == spelling:
+            next_word = requests.post('http://watchout4snakes.com/wo4snakes/Random/RandomWord').content
+    else:
+        next_word = requests.post('http://watchout4snakes.com/wo4snakes/Random/RandomWord').content
 
     return {
-        "speech": next_word,
-        "displayText": next_word,
-        "data": next_word,
-        "contextOut": [{"name":"spelling-server", "lifespan":2, "parameters":{"current_word": spelling}}],
+        "speech": next_word or current_word,
+        "displayText": next_word or current_word,
+        "data": next_word or current_word,
+        "contextOut": [{"name":"spelling-server", "lifespan":2, "parameters":{"current_word": next_word or current_word,}}],
         "source": "spelling-server"
     }
 
